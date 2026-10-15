@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-- /train_p2n_ar_modern
+- /policy/p2n_ar_modern/base
 - _self_
 name: train_p2n_ar_modern_libero
 variant: p2n_ar_modern

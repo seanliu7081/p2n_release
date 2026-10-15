@@ -30,15 +30,15 @@ TASK_NAMES = {name: preset.task_name for name, preset in TASK_PRESETS.items()}
 TASK_NAMES['real_robot'] = TASK_NAMES['nut_washer']
 
 REAL_ROBOT_CONFIGS = {
-    'p2n_ar_classic': 'experimental/train_p2n_ar_classic_real_robot',
-    'p2n_ar_modern': 'experimental/train_p2n_ar_modern_real_robot',
-    'p2n_ar_modern_state_gate': 'experimental/train_p2n_ar_modern_state_gate_real_robot',
-    'p2n_latent_flow': 'experimental/train_p2n_latent_flow_resnet18_real_robot',
-    'p2n_state_gate_latent_flow': 'experimental/train_p2n_state_gate_latent_flow_resnet18_real_robot',
-    'p2n_action_flow': 'experimental/train_p2n_action_flow_resnet18_real_robot',
-    'p2n_state_gate_action_flow': 'experimental/train_p2n_state_gate_action_flow_resnet18_real_robot',
-    'p2n_ar_classic_state_history_gate': 'experimental/train_p2n_ar_classic_state_history_gate_real_robot',
-    'diffpolicy': 'train_diffpolicy_real_robot',
+    'p2n_ar_classic': 'policy/p2n_ar_classic/real',
+    'p2n_ar_modern': 'policy/p2n_ar_modern/real',
+    'p2n_ar_modern_state_gate': 'policy/p2n_ar_modern_state_gate/real',
+    'p2n_latent_flow': 'policy/p2n_latent_flow/real',
+    'p2n_state_gate_latent_flow': 'policy/p2n_state_gate_latent_flow/real',
+    'p2n_action_flow': 'policy/p2n_action_flow/real',
+    'p2n_state_gate_action_flow': 'policy/p2n_state_gate_action_flow/real',
+    'p2n_ar_classic_state_history_gate': 'policy/p2n_ar_classic_state_history_gate/real',
+    'diffpolicy': 'policy/diffpolicy/real',
 }
 
 

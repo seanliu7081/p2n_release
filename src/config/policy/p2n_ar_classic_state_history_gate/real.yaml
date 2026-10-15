@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-- /experimental/train_p2n_ar_classic_state_history_gate
+- /policy/p2n_ar_classic_state_history_gate/sim
 - /real_robot_task: pen_cabinet_lp3
 - override /task/policy: real_robot/common_with_prev_window
 - _self_

@@ -103,6 +103,17 @@ actions. The classic scratch recipe uses eight layers, width 256, and eight head
 diffusion uses four layers, width 256, and four heads. See `src/config/` for the
 complete training and architecture settings.
 
+Policy training configs are grouped by variant under
+`src/config/policy/<variant>/`. Each of the nine folders contains `sim.yaml`
+and `real.yaml`. Shared recipe defaults use `base.yaml` where needed; additional
+classic AR recipes stay in the `p2n_ar_classic/` folder. Task schemas remain in
+`src/config/task/`, and real task presets remain in `src/config/real_robot_task/`.
+
+For example, direct Hydra selection uses
+`--config-name=policy/p2n_action_flow/sim` or
+`--config-name=policy/p2n_action_flow/real`. The shell commands and `--task`
+selection are unchanged.
+
 ## Tasks and datasets
 
 `--task libero` selects LIBERO-10, with the configured 500-demonstration dataset.

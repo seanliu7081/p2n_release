@@ -21,15 +21,15 @@ sys.path.insert(0, str(ROOT))
 from scripts.real_robot_tasks import REAL_ROBOT_CONFIGS, REAL_ROBOT_TASKS, task_overrides
 
 SIM_CONFIGS = {
-    'p2n_ar_classic': 'train_p2n_ar_classic_scratch',
-    'p2n_ar_classic_state_history_gate': 'experimental/train_p2n_ar_classic_state_history_gate',
-    'p2n_ar_modern': 'experimental/train_p2n_ar_modern_libero',
-    'p2n_ar_modern_state_gate': 'experimental/train_p2n_ar_modern_state_gate_libero',
-    'p2n_latent_flow': 'train_p2n_latent_flow_resnet18',
-    'p2n_state_gate_latent_flow': 'train_p2n_state_gate_latent_flow_resnet18',
-    'p2n_action_flow': 'train_p2n_action_flow_resnet18',
-    'p2n_state_gate_action_flow': 'train_p2n_state_gate_action_flow_resnet18',
-    'diffpolicy': 'train_diffpolicy_libero',
+    'p2n_ar_classic': 'policy/p2n_ar_classic/sim',
+    'p2n_ar_classic_state_history_gate': 'policy/p2n_ar_classic_state_history_gate/sim',
+    'p2n_ar_modern': 'policy/p2n_ar_modern/sim',
+    'p2n_ar_modern_state_gate': 'policy/p2n_ar_modern_state_gate/sim',
+    'p2n_latent_flow': 'policy/p2n_latent_flow/sim',
+    'p2n_state_gate_latent_flow': 'policy/p2n_state_gate_latent_flow/sim',
+    'p2n_action_flow': 'policy/p2n_action_flow/sim',
+    'p2n_state_gate_action_flow': 'policy/p2n_state_gate_action_flow/sim',
+    'diffpolicy': 'policy/diffpolicy/sim',
 }
 TASKS = ('libero', *REAL_ROBOT_TASKS)
 
@@ -77,7 +77,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     selection = parser.add_mutually_exclusive_group(required=True)
     selection.add_argument('--variant', choices=tuple(REAL_ROBOT_CONFIGS))
-    selection.add_argument('--config-name', help='Policy config name, with or without experimental/ and .yaml')
+    selection.add_argument('--config-name', help='Policy config path, e.g. policy/p2n_action_flow/sim (optional .yaml)')
     parser.add_argument('--task', choices=TASKS, required=True)
     parser.add_argument('--tokenizer', help='Task-matched OAT checkpoint for AR/latent-flow policies')
     parser.add_argument('--dataset', help='Override the selected task dataset path')
@@ -104,7 +104,7 @@ def main(argv=None):
     if args.config_name:
         name = args.config_name.removesuffix('.yaml')
         recipes = SIM_CONFIGS if args.task == 'libero' else REAL_ROBOT_CONFIGS
-        matches = [v for v, config in recipes.items() if name in (config, config.split('/')[-1])]
+        matches = [v for v, config in recipes.items() if name in (config, config.removeprefix('policy/'))]
         if not matches:
             parser.error('--config-name must match the selected task; choose one of: ' + ', '.join(recipes.values()))
         variant = matches[0]

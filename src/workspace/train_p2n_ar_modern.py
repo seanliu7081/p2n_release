@@ -680,7 +680,7 @@ class TrainP2NARModernWorkspace(_ModernWorkspace):
 
 @hydra.main(version_base=None,
             config_path=str(pathlib.Path(__file__).parent.parent / "config"),
-            config_name="experimental/train_p2n_ar_modern_real_robot")
+            config_name="policy/p2n_ar_modern/real")
 def main(cfg):
     TrainP2NARModernWorkspace(cfg).run()
 

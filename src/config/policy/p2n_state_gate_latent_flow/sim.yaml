@@ -1,7 +1,7 @@
 # @package _global_
 # Original ResNet-18 observation encoder, trained from scratch.
 defaults:
-  - train_p2n_state_gate_latent_flow
+  - /policy/p2n_state_gate_latent_flow/base
   - _self_
 
 name: train_p2n_state_gate_latent_flow_resnet18

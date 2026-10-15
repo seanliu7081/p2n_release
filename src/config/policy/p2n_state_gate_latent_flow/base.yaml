@@ -1,5 +1,6 @@
+# @package _global_
 defaults:
-  - train_p2n_latent_flow
+  - /policy/p2n_latent_flow/base
   - _self_
 
 name: train_p2n_state_gate_latent_flow

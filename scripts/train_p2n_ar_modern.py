@@ -27,7 +27,7 @@ from scripts.real_robot_tasks import (
 )
 
 CONFIG_NAMES = {
-    (variant, task): (f"experimental/train_{variant}_libero"
+    (variant, task): (f"policy/{variant}/sim"
                       if task == "libero" else REAL_ROBOT_CONFIGS[variant])
     for variant in ("p2n_ar_modern", "p2n_ar_modern_state_gate")
     for task in TASK_TYPES

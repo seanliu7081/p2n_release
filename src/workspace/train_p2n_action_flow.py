@@ -719,7 +719,7 @@ class TrainP2NActionFlowWorkspace(BaseWorkspace):
         accelerator.end_training()
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="train_p2n_action_flow_resnet18")
+@hydra.main(version_base=None, config_path="../config", config_name="policy/p2n_action_flow/sim")
 def main(cfg):
     TrainP2NActionFlowWorkspace(cfg).run()
 

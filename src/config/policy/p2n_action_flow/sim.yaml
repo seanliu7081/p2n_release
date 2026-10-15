@@ -1,12 +1,14 @@
+# @package _global_
+# Trainable original ResNet-18 + SpatialSoftmax; random initialization, no external weights.
 defaults:
-  - task/policy: libero/libero10_with_prev_window
+  - /task/policy: libero/libero10_with_prev_window
   - _self_
 
-name: train_p2n_latent_flow
-policy_family: oat_latent_flow
-variant: p2n_latent_flow
+name: train_p2n_action_flow_resnet18
+policy_family: continuous_action_flow
+variant: p2n_action_flow
 task_type: libero
-_target_: src.workspace.train_p2n_latent_flow.TrainP2NLatentFlowWorkspace
+_target_: src.workspace.train_p2n_action_flow_resnet18.TrainP2NActionFlowResNet18Workspace
 seed: 42
 horizon: 16
 n_action_steps: 8
@@ -16,13 +18,7 @@ task_name: ${task.policy.name}
 shape_meta: ${task.policy.shape_meta}
 
 policy:
-  obs_encoder_type: resnet18
-  resnet_config:
-    crop_shape: [112, 112]
-    use_group_norm: true
-    share_rgb_model: false
-    eval_fixed_crop: true
-  _target_: src.policy.p2n_latent_flow.P2NLatentFlowPolicy
+  _target_: src.policy.p2n_action_flow_resnet18.P2NActionFlowResNet18Policy
   variant: ${variant}
   task: ${task_type}
   shape_meta: ${shape_meta}
@@ -31,11 +27,17 @@ policy:
   past_n: ${past_n}
   horizon: ${horizon}
   construction_mode: fresh
-  tokenizer_checkpoint: null
+  obs_encoder_type: resnet18
+  resnet_config:
+    crop_shape: [112, 112]
+    use_group_norm: true
+    share_rgb_model: false
+    eval_fixed_crop: true
+  action_dim: 7
+  action_schema: ${action_schema}
   embed_dim: 768
   n_layers: 16
   n_heads: 12
-  ffn_dim: 2048
   dropout: 0.0
   activation_checkpointing: true
   self_past_p: 0.5
@@ -45,10 +47,15 @@ policy:
   self_past_chunk_size: 2
 
   flow:
-    latent_space: fsq_normalized_codes
-    num_slots: 8
-    code_dim: 5
-    levels: [8, 5, 5, 5, 5]
+    space: normalized_actions
+    ffn_type: gelu
+    ffn_hidden_dim: 3072
+    self_qk_norm: false
+    cross_qk_norm: layernorm
+    qkv_bias: true
+    time_embed_dim: 128
+    global_condition: time_and_step_only
+    pre_norm_modality: false
     fm_fraction: 0.75
     ct_weight: 1.0
     fm_beta: [1.0, 1.5]
@@ -58,7 +65,43 @@ policy:
     solver: euler
     inference_steps: 8
     self_past_steps: 8
-    endpoint_projection: fsq_nearest_grid
+    output_transform: action_unnormalize
+    loss_padding: supervise_edge_repeated_targets
+
+normalization:
+  source: training_replay_frames
+  mode: limits
+  refit_on_resume: false
+
+action_schema:
+  version: 1
+  action_dim: 7
+  horizon: ${horizon}
+  execution_steps: ${n_action_steps}
+  execution_anchor: current_observation_t
+  control_frequency_hz: 20
+  source: third_party/LIBERO/libero/libero/envs/env_wrapper.py
+  translation:
+    slice: [0, 3]
+    representation: controller_delta_position
+    frame: OSC_POSE_controller_frame
+    units: normalized_controller_command
+  rotation:
+    slice: [3, 6]
+    representation: controller_rotation_vector_delta
+    frame: OSC_POSE_controller_frame
+    units: normalized_controller_command
+  gripper:
+    index: 6
+    representation: absolute_controller_command
+    units: normalized_controller_command
+    open: -1.0
+    closed: 1.0
+  gripper_observation:
+    key: robot0_gripper_qpos
+    representation: measured_joint_positions
+    units: metres
+  controller_postprocessing: external_LIBERO_OSC_POSE_controller
 
 training:
   resume: false
@@ -70,8 +113,8 @@ training:
   val_every: 1
   sample_every: 1
   rollout_every: 25
-  checkpoint_every: 25
-  snapshot_every: 25
+  checkpoint_every: 20
+  snapshot_every: 20
   lr_scheduler: cosine
   lr_warmup_steps: null
   lr_warmup_ratio: 0.05
@@ -121,26 +164,26 @@ task:
   policy:
     lazy_eval: true
     dataset:
-      _target_: src.dataset.latent_flow_dataset.LatentFlowZarrDatasetWithPrevWindow
+      _target_: src.dataset.action_flow_dataset.ActionFlowZarrDatasetWithPrevWindow
       history_padding: zero
       return_history_validity: true
       val_ratio: 0.1
       max_train_episodes: null
     env_runner:
-      _target_: src.env_runner.p2n_latent_flow_runner.P2NLatentFlowLiberoRunner
+      _target_: src.env_runner.p2n_action_flow_runner.P2NActionFlowLiberoRunner
       protocol: corrected
       n_test: 100
       n_test_vis: 0
       n_parallel_envs: 10
 
 logging:
-  project: p2n_latent_flow
+  project: p2n_action_flow_resnet18
   resume: false
-  mode: offline
-  name: ${now:%Y%m%d.%H%M%S}_${variant}_${task_name}_seed${seed}
+  mode: online
+  name: ${now:%Y%m%d.%H%M%S}_${variant}_resnet18_${task_name}_seed${seed}
   tags: ['${variant}', '${task_name}', 'resnet18']
   id: null
-  group: ${variant}_${task_type}
+  group: ${variant}_resnet18_${task_type}
 
 checkpoint:
   topk:
@@ -154,6 +197,6 @@ checkpoint:
 
 hydra:
   run:
-    dir: output/training/${variant}_${task_type}_${now:%Y%m%d_%H%M%S}_seed${seed}
+    dir: output/training/${variant}_resnet18_${task_type}_${now:%Y%m%d_%H%M%S}_seed${seed}
   job:
     chdir: false

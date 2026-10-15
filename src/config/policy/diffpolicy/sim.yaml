@@ -1,5 +1,6 @@
+# @package _global_
 defaults:
-- task/policy: libero/diffpolicy
+- /task/policy: libero/diffpolicy
 - _self_
 name: train_diffpolicy_libero
 _target_: src.workspace.train_policy.TrainPolicyWorkspace

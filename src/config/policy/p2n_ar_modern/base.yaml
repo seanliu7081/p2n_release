@@ -1,6 +1,7 @@
+# @package _global_
 # Additive original-fused recipe. No DINO, ConvNeXt or Resampler fields.
 defaults:
-- task/policy: libero/libero10_with_prev_window
+- /task/policy: libero/libero10_with_prev_window
 - _self_
 name: train_p2n_ar_modern
 variant: p2n_ar_modern

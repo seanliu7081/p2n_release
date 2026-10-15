@@ -720,7 +720,7 @@ class TrainP2NLatentFlowWorkspace(BaseWorkspace):
         accelerator.end_training()
 
 
-@hydra.main(version_base=None, config_path="../config", config_name="train_p2n_latent_flow")
+@hydra.main(version_base=None, config_path="../config", config_name="policy/p2n_latent_flow/base")
 def main(cfg):
     TrainP2NLatentFlowWorkspace(cfg).run()
 

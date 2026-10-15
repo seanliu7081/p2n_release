@@ -1,8 +1,9 @@
+# @package _global_
 # Adapted from past2next_clean/oat/config/train_diffpolicy.yaml.
 # One-stage diffusion training: no action tokenizer or past-action windows.
 defaults:
-  - real_robot_task: pen_cabinet_lp3
-  - task/policy: real_robot/diffpolicy
+  - /real_robot_task: pen_cabinet_lp3
+  - /task/policy: real_robot/diffpolicy
   - _self_
 
 name: train_diffpolicy_real_robot
