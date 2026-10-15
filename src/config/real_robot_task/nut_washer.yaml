@@ -1,0 +1,7 @@
+task_name: nut_washer_v3_N77
+dataset_name: nut_washer_v3_N77
+dataset_path: /workspace/ysk/zarr/nut_washer_v3_N77.zarr
+num_demo: 77
+val_ratio: 0.05
+split_seed: 42
+oat_checkpoint: /workspace/ysk/past2next_bug_fixed/output/training/nut_washer_v3_N77_gated_so3aug_20260924_081008_317043427/tokenizer/checkpoints/ep-1540_mse-0.000.ckpt

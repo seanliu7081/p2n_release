@@ -1,0 +1,14 @@
+data/
+output/
+*.DS_Store
+*__pycache__/
+*.ckpt
+.pytest_cache/
+
+# Local environments, credentials, and build artifacts
+.venv/
+.env
+.env.*
+build/
+dist/
+*.egg-info/

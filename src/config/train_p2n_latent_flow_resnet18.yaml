@@ -1,0 +1,24 @@
+# @package _global_
+# Original ResNet-18 observation encoder, trained from scratch.
+defaults:
+  - train_p2n_latent_flow
+  - _self_
+
+name: train_p2n_latent_flow_resnet18
+
+policy:
+  obs_encoder_type: resnet18
+  resnet_config:
+    crop_shape: [112, 112]
+    use_group_norm: true
+    share_rgb_model: false
+    eval_fixed_crop: true
+
+logging:
+  name: ${now:%Y%m%d.%H%M%S}_${variant}_resnet18_${task_name}_seed${seed}
+  tags: ['${variant}', '${task_name}', 'resnet18']
+  group: ${variant}_resnet18_${task_type}
+
+hydra:
+  run:
+    dir: output/training/${variant}_resnet18_${task_type}_${now:%Y%m%d_%H%M%S}_seed${seed}

@@ -1,0 +1,7 @@
+task_name: pen_cabinet_N67
+dataset_name: pen_cabinet_N67
+dataset_path: /workspace/ysk/zarr/pen_cabinet_N67.zarr
+num_demo: 67
+val_ratio: 0.1
+split_seed: 42
+oat_checkpoint: /workspace/ysk/past2next_bug_fixed/output/training/pen_cabinet_N67_current_20260919_212551/tokenizer/checkpoints/ep-2950_mse-0.000.ckpt

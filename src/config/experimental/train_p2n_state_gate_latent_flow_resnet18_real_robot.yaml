@@ -1,0 +1,53 @@
+# @package _global_
+defaults:
+- /train_p2n_state_gate_latent_flow
+- /real_robot_task: nut_washer
+- override /task/policy: real_robot/common_with_prev_window
+- _self_
+name: train_p2n_state_gate_latent_flow_resnet18_real_robot
+task_type: real_robot
+state_history_keys:
+- robot0_eef_pos
+- robot0_eef_rot6d
+- robot0_gripper_qpos
+policy:
+  tokenizer_checkpoint: ${real_robot_task.oat_checkpoint}
+  rotation_6d_layout: rows
+  obs_encoder_type: resnet18
+  resnet_config:
+    crop_shape:
+    - 112
+    - 112
+    use_group_norm: true
+    share_rgb_model: false
+    eval_fixed_crop: true
+training:
+  num_demo: ${real_robot_task.num_demo}
+  num_epochs: 2001
+  checkpoint_every: 50
+  snapshot_every: 50
+  offline_validation_reason: held_out_${real_robot_task.dataset_name}_episodes
+task:
+  policy:
+    lazy_eval: true
+    env_runner: null
+    dataset:
+      _target_: src.dataset.latent_flow_dataset.LatentFlowRealRobotZarrDatasetWithStateHistory
+      state_history_steps: ${state_history_steps}
+      state_history_keys: ${state_history_keys}
+      history_padding: zero
+      return_history_validity: true
+      zarr_path: ${real_robot_task.dataset_path}
+      val_ratio: ${real_robot_task.val_ratio}
+      seed: ${real_robot_task.split_seed}
+logging:
+  project: real_robot_p2n_latent_flow
+  name: ${now:%Y%m%d.%H%M%S}_${variant}_resnet18_${task_name}_seed${seed}
+  tags:
+  - ${variant}
+  - ${task_name}
+  - resnet18
+  group: ${variant}_resnet18_${real_robot_task.dataset_name}
+hydra:
+  run:
+    dir: output/training/${variant}_resnet18_${task_type}_${now:%Y%m%d_%H%M%S}_seed${seed}

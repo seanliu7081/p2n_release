@@ -1,0 +1,7 @@
+task_name: nut_washer
+dataset_name: nut_washer_N62
+dataset_path: /workspace/ysk/zarr/nut_washer_N62.zarr
+num_demo: 62
+val_ratio: 0.1
+split_seed: 42
+oat_checkpoint: null

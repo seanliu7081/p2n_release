@@ -1,0 +1,33 @@
+# @package _global_
+defaults:
+- /train_p2n_ar_classic_scratch
+- /real_robot_task: nut_washer
+- override /task/policy: real_robot/common_with_prev_window
+- _self_
+name: train_p2n_ar_classic_real_robot
+policy:
+  action_tokenizer:
+    checkpoint: ${real_robot_task.oat_checkpoint}
+training:
+  num_demo: ${real_robot_task.num_demo}
+  num_epochs: 2001
+  checkpoint_every: 50
+  snapshot_every: 50
+  offline_validation_enabled: true
+  offline_validation_reason: held_out_${real_robot_task.dataset_name}_episodes
+task:
+  policy:
+    lazy_eval: true
+    env_runner: null
+    dataset:
+      zarr_path: ${real_robot_task.dataset_path}
+      val_ratio: ${real_robot_task.val_ratio}
+      seed: ${real_robot_task.split_seed}
+logging:
+  project: real_robot
+  group: p2n_ar_classic_${real_robot_task.dataset_name}
+checkpoint:
+  topk:
+    monitor_key: val_loss
+    mode: min
+    format_str: ep-{epoch:04d}_val-{val_loss:.6f}.ckpt

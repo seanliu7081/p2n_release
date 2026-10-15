@@ -1,0 +1,7 @@
+task_name: fruits
+dataset_name: fruits_N51
+dataset_path: /workspace/ysk/zarr/fruits_N51.zarr
+num_demo: 51
+val_ratio: 0.1
+split_seed: 42
+oat_checkpoint: null

@@ -1,0 +1,36 @@
+# @package _global_
+defaults:
+- /train_p2n_ar_modern
+- _self_
+name: train_p2n_ar_modern_state_gate_libero
+variant: p2n_ar_modern_state_gate
+task_type: libero
+state_history_steps: 8
+state_history_keys:
+- robot0_eef_pos
+- robot0_eef_quat
+- robot0_gripper_qpos
+policy:
+  _target_: src.policy.p2n_ar_modern.P2NARModernStateGatePolicy
+  state_history_steps: ${state_history_steps}
+  state_history_keys: ${state_history_keys}
+  history_embed_dim: 128
+  history_n_heads: 4
+  history_n_layers: 2
+  history_summary_tokens: 4
+  history_dropout: 0.1
+  history_gate_mode: learned
+  history_gate_hidden_dim: 128
+  history_gate_init: 0.9
+  rotation_6d_layout: rows
+task:
+  policy:
+    dataset:
+      _target_: src.dataset.zarr_dataset_with_state_history.ZarrDatasetWithStateHistory
+      state_history_steps: ${state_history_steps}
+      state_history_keys: ${state_history_keys}
+    env_runner:
+      _target_: src.env_runner.p2n_libero_egl_runner.P2NARModernStateGateLiberoRunner
+      state_history_steps: ${state_history_steps}
+      state_history_keys: ${state_history_keys}
+    lazy_eval: false
